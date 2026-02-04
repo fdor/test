@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Book;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -41,12 +42,7 @@ class BookController extends Controller
         $dataProvider = new ActiveDataProvider([
             'query' => Book::find(),
             'pagination' => [
-                'pageSize' => 30
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
+                'pageSize' => Yii::$app->params['pageSize'],
             ],
         ]);
 

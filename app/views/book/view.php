@@ -1,5 +1,6 @@
 <?php
 
+use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -37,5 +38,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'photo',
         ],
     ]) ?>
+
+    <?php $form = ActiveForm::begin() ?>
+        <?= $form->field($model,'phone') ?>
+        <button type="submit">Подписаться на новые книги</button>
+    <?php ActiveForm::end(); ?>
 
 </div>

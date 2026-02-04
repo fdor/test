@@ -1,10 +1,14 @@
 <?php
 
+use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Alert;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\widgets\MaskedInput;
 
 /** @var yii\web\View $this */
 /** @var app\models\Author $model */
+/** @var app\models\Subscription $subscription */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Authors', 'url' => ['index']];
@@ -36,4 +40,15 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <br>
+
+    <h5>Подписка на автора</h5>
+    <div style="background: #eee; padding: 10px;">
+        <?php $form = ActiveForm::begin() ?>
+            <?= $form->field($subscription, 'phone')->widget(MaskedInput::class, [
+                'mask' => '7 (999) 999-99-99'
+            ]); ?>
+            <button type="submit" class="btn btn-primary">Подписаться на новые книги автора</button>
+        <?php ActiveForm::end() ?>
+    </div>
 </div>

@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\models\Author;
+use app\models\Subscription;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -32,7 +34,7 @@ class AuthorController extends Controller
     }
 
     /**
-     * Lists all Author models.
+     * Список авторов
      *
      * @return string
      */
@@ -40,16 +42,9 @@ class AuthorController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Author::find(),
-            /*
             'pagination' => [
-                'pageSize' => 50
+                'pageSize' => Yii::$app->params['pageSize'],
             ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-            */
         ]);
 
         return $this->render('index', [
@@ -65,8 +60,18 @@ class AuthorController extends Controller
      */
     public function actionView($id)
     {
+        $subscription = new Subscription();
+        $subscription->author_id = $id;
+
+        if ($subscription->load($this->request->post()) && $subscription->validate()) {
+            $subscription->save();
+            $subscription->phone = '';
+            Yii::$app->session->setFlash('success', 'Подписка оформлена');
+        }
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'subscription' => $subscription,
         ]);
     }
 

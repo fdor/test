@@ -49,11 +49,11 @@ class Book extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
-            'description' => 'Description',
-            'year' => 'Year',
-            'isbn' => 'Isbn',
-            'photo' => 'Photo',
+            'title' => 'Название',
+            'description' => 'Описание',
+            'year' => 'Год',
+            'isbn' => 'ISBN',
+            'photo' => 'Фото',
         ];
     }
 

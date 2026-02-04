@@ -30,8 +30,17 @@ class m260204_101956_create_tables extends Migration
             'author_id' => $this->integer()->notNull(),
         ]);
 
-        $this->addForeignKey('fk_book', 'book_author', 'book_id', 'book', 'id');
-        $this->addForeignKey('fk_author', 'book_author', 'author_id', 'author', 'id');
+        $this->addForeignKey('fk_book_author_book', 'book_author', 'book_id', 'book', 'id');
+        $this->addForeignKey('fk_book_author_author', 'book_author', 'author_id', 'author', 'id');
+
+        $this->createTable('subscription', [
+            'id' => $this->primaryKey(),
+            'phone' => $this->string(11)->notNull(),
+            'author_id' => $this->integer()->notNull(),
+        ]);
+
+        $this->createIndex('idx_phone', 'subscription', ['phone'], true);
+        $this->addForeignKey('fk_subscription_author', 'subscription', 'author_id', 'author', 'id');
 
         $this->createTable('user', [
             'id' => $this->primaryKey(),
@@ -45,8 +54,8 @@ class m260204_101956_create_tables extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk_author', 'book_author');
-        $this->dropForeignKey('fk_book', 'book_author');
+        $this->dropForeignKey('fk_book_author_book', 'book_author');
+        $this->dropForeignKey('fk_book_author_author', 'book_author');
         $this->dropTable('book_author');
         $this->dropTable('author');
         $this->dropTable('book');
