@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Author;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -55,13 +56,17 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
+     * Главная - новости и топ 10
      *
      * @return string
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $top = Author::getTop(date('Y'));
+
+        return $this->render('index', [
+            'top' => $top,
+        ]);
     }
 
     /**
