@@ -15,11 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="author-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Добавить автора', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
+    <?php if(Yii::$app->user->can('createAuthor')): ?>
+        <p><?= Html::a('Добавить автора', ['create'], ['class' => 'btn btn-success']) ?></p>
+    <?php endif; ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -34,7 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Author $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                },
+                'template' => Author::getButtons(),
             ],
         ],
     ]); ?>

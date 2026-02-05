@@ -1,5 +1,9 @@
 <?php
 
+use yii\mutex\MysqlMutex;
+use yii\queue\db\Queue;
+use yii\queue\LogBehavior;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -8,12 +12,22 @@ $config = [
     'name' => 'Мои книги',
     'language' => 'ru',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log', 'queue_sms'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'queue_sms' => [
+            'class' => Queue::class,
+            'db' => 'db',
+            'tableName' => 'queue',
+            'channel' => 'default',
+            'mutex' => MysqlMutex::class,
+        ],
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'OY_XNruIje1LPlH08hPzaH6QFzxH5DA7',

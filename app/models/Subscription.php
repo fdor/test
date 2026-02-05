@@ -75,4 +75,14 @@ class Subscription extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Author::class, ['id' => 'author_id']);
     }
+
+    public static function findPhonesToSendSms(int $authorId): array
+    {
+        return Subscription::find()
+            ->select(['phone'])
+            ->where(['author_id' => $authorId])
+            ->asArray()
+            ->all()
+        ;
+    }
 }

@@ -39,13 +39,14 @@ class m260204_101956_create_tables extends Migration
             'author_id' => $this->integer()->notNull(),
         ]);
 
-        $this->createIndex('idx_phone', 'subscription', ['phone'], true);
         $this->addForeignKey('fk_subscription_author', 'subscription', 'author_id', 'author', 'id');
 
         $this->createTable('user', [
             'id' => $this->primaryKey(),
-            'email' => $this->string()->notNull(),
+            'email' => $this->string()->notNull()->unique(),
             'password' => $this->string()->notNull(),
+            'auth_key' => $this->string(),
+            'access_token' => $this->string(),
         ]);
     }
 
@@ -54,10 +55,10 @@ class m260204_101956_create_tables extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk_book_author_book', 'book_author');
-        $this->dropForeignKey('fk_book_author_author', 'book_author');
+        $this->dropTable('subscription');
         $this->dropTable('book_author');
         $this->dropTable('author');
         $this->dropTable('book');
+        $this->dropTable('user');
     }
 }

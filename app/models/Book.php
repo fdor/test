@@ -18,7 +18,7 @@ use Yii;
  */
 class Book extends \yii\db\ActiveRecord
 {
-
+    public $authorsFromForm;
 
     /**
      * {@inheritdoc}
@@ -34,7 +34,7 @@ class Book extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'description', 'year', 'isbn', 'photo'], 'required'],
+            [['title', 'description', 'year', 'isbn', 'photo', 'authorsFromForm'], 'required'],
             [['title', 'description', 'photo'], 'string', 'max' => 255],
             [['year'], 'string', 'max' => 4],
             [['isbn'], 'string', 'max' => 13],
@@ -54,17 +54,38 @@ class Book extends \yii\db\ActiveRecord
             'year' => 'Год',
             'isbn' => 'ISBN',
             'photo' => 'Фото',
+            'authorsFromForm' => 'Авторы',
         ];
     }
 
-    /**
-     * Gets query for [[BookAuthors]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBookAuthors()
+    public function afterSave($insert, $changedAttributes)
     {
-        return $this->hasMany(BookAuthor::class, ['book_id' => 'id']);
+        foreach ($this->authorsFromForm as $authorId) {
+            $bookAuthor = new BookAuthor();
+            $bookAuthor->book_id = $this->id;
+            $bookAuthor->author_id = $authorId;
+            $bookAuthor->save();
+        }
+
+        parent::afterSave($insert, $changedAttributes);
     }
 
+    public function getAuthors()
+    {
+        return $this->hasMany(Author::class, ['id' => 'book_id'])
+            ->viaTable('book_author', ['author_id' => 'id']);
+    }
+
+    public static function getButtons()
+    {
+        $buttons = '{view} ';
+        if (Yii::$app->user->can('updateBook')) {
+            $buttons .= '{update} ';
+        }
+        if (Yii::$app->user->can('deleteBook')) {
+            $buttons .= '{delete} ';
+        }
+
+        return $buttons;
+    }
 }

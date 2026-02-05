@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Author;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -22,8 +23,10 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'photo')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'authorsFromForm')->checkboxList(Author::getAuthorArray()); ?>
+
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 /** @var app\models\Book $model */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Books', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Книги', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -17,14 +17,18 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?php if(Yii::$app->user->can('updateBook')): ?>
+            <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?php endif; ?>
+        <?php if(Yii::$app->user->can('deleteBook')): ?>
+            <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Are you sure you want to delete this item?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+        <?php endif; ?>
     </p>
 
     <?= DetailView::widget([
@@ -36,12 +40,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'year',
             'isbn',
             'photo',
+            'authors.first_name'
         ],
     ]) ?>
-
-    <?php $form = ActiveForm::begin() ?>
-        <?= $form->field($model,'phone') ?>
-        <button type="submit">Подписаться на новые книги</button>
-    <?php ActiveForm::end(); ?>
 
 </div>

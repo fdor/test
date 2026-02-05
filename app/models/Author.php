@@ -16,8 +16,6 @@ use Yii;
  */
 class Author extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -51,13 +49,40 @@ class Author extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[BookAuthors]].
+     * Полное имя
      *
-     * @return \yii\db\ActiveQuery
+     * @return string|null
      */
-    public function getBookAuthors()
+    public function getFullName(): ?string
     {
-        return $this->hasMany(BookAuthor::class, ['author_id' => 'id']);
+        return mb_substr($this->first_name, 0, 1) . '. ' .
+            mb_substr($this->second_name, 0, 1) . '. ' .
+            $this->last_name;
+    }
+
+    /**
+     * Массив всех авторов
+     *
+     * @return array
+     */
+    public static function getAuthorArray()
+    {
+        $authors = [];
+        foreach(Author::find()->all() as $author) {
+            $authors[$author->id] = $author->getFullName();
+        }
+
+        return $authors;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getBooks()
+    {
+        return $this->hasMany(Book::class, ['id' => 'author_id'])
+            ->viaTable('book_author', ['book_id' => 'id']);
     }
 
     /**
@@ -84,4 +109,21 @@ class Author extends \yii\db\ActiveRecord
         ;
     }
 
+    /**
+     * Кнопки
+     *
+     * @return string
+     */
+    public static function getButtons()
+    {
+        $buttons = '{view} ';
+        if (Yii::$app->user->can('updateAuthor')) {
+            $buttons .= '{update} ';
+        }
+        if (Yii::$app->user->can('deleteAuthor')) {
+            $buttons .= '{delete} ';
+        }
+
+        return $buttons;
+    }
 }
