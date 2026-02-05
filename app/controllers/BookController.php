@@ -155,7 +155,11 @@ class BookController extends Controller
     public function actionDelete($id)
     {
         BookAuthor::deleteAll(['book_id' => $id]);
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if ($model->photo) {
+            unlink('uploads/' . $model->photo);
+        }
+        $model->delete();
 
         return $this->redirect(['index']);
     }
