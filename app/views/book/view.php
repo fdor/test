@@ -43,7 +43,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'photo',
                 'format' => 'raw',
                 'value' => function ($model) {
-                    return '<img src="/uploads/' . $model->photo . '" width=100 />';
+                    if ($model->photo) {
+                        return '<img src="/uploads/' . $model->photo . '" width=100 />';
+                    }
                 },
             ],
             [
