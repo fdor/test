@@ -15,8 +15,6 @@ use Yii;
  */
 class BookAuthor extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -50,7 +48,7 @@ class BookAuthor extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Author]].
+     * Автор
      *
      * @return \yii\db\ActiveQuery
      */
@@ -60,7 +58,7 @@ class BookAuthor extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Book]].
+     * Книга
      *
      * @return \yii\db\ActiveQuery
      */
@@ -68,5 +66,4 @@ class BookAuthor extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Book::class, ['id' => 'book_id']);
     }
-
 }

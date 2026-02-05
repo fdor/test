@@ -48,6 +48,8 @@ class Subscription extends \yii\db\ActiveRecord
     }
 
     /**
+     * Валидация телефона
+     *
      * @param $attribute
      * @param $params
      */
@@ -69,6 +71,8 @@ class Subscription extends \yii\db\ActiveRecord
     }
 
     /**
+     * Автор
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getAuthor()
@@ -76,6 +80,12 @@ class Subscription extends \yii\db\ActiveRecord
         return $this->hasOne(Author::class, ['id' => 'author_id']);
     }
 
+    /**
+     * Телефоны для отправки смс
+     *
+     * @param int $authorId
+     * @return array
+     */
     public static function findPhonesToSendSms(int $authorId): array
     {
         return Subscription::find()

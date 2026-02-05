@@ -66,7 +66,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * Validates password
+     * Валидация пароля
      *
      * @param string $password password to validate
      * @return bool if password provided is valid for current user

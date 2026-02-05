@@ -76,6 +76,8 @@ class Author extends \yii\db\ActiveRecord
     }
 
     /**
+     * Книги
+     *
      * @return \yii\db\ActiveQuery
      * @throws \yii\base\InvalidConfigException
      */

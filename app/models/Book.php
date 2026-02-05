@@ -60,6 +60,11 @@ class Book extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     * @throws \yii\db\Exception
+     */
     public function afterSave($insert, $changedAttributes)
     {
         BookAuthor::deleteAll(['book_id' => $this->id]);
@@ -74,6 +79,11 @@ class Book extends \yii\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
     }
 
+    /**
+     * Загрузка фото
+     *
+     * @throws \yii\db\Exception
+     */
     public function upload()
     {
         $this->photo = UploadedFile::getInstance($this, 'photo');
@@ -85,12 +95,23 @@ class Book extends \yii\db\ActiveRecord
         }
     }
 
+    /**
+     * Авторы
+     *
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
     public function getAuthors()
     {
         return $this->hasMany(Author::class, ['id' => 'author_id'])
             ->viaTable('book_author', ['book_id' => 'id']);
     }
 
+    /**
+     * Кнопки
+     *
+     * @return string
+     */
     public static function getButtons()
     {
         $buttons = '{view} ';
