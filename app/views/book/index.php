@@ -27,6 +27,17 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
+            [
+                'attribute' => 'authors',
+                'value' => function ($model) {
+                    $authors = $model->authors;
+                    $authorsArray = [];
+                    foreach ($authors as $author) {
+                        $authorsArray[] = $author->getFullName();
+                    }
+                    return implode(', ', $authorsArray);
+                },
+            ],
             'title',
             'description',
             'year',

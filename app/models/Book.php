@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "book".
@@ -34,11 +35,12 @@ class Book extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'description', 'year', 'isbn', 'photo', 'authorsFromForm'], 'required'],
-            [['title', 'description', 'photo'], 'string', 'max' => 255],
+            [['title', 'description', 'year', 'isbn', 'authorsFromForm'], 'required'],
+            [['title', 'description'], 'string', 'max' => 255],
             [['year'], 'string', 'max' => 4],
             [['isbn'], 'string', 'max' => 13],
-            [['title'], 'unique'],
+            [['title', 'isbn'], 'unique'],
+            [['photo'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
         ];
     }
 
@@ -60,6 +62,8 @@ class Book extends \yii\db\ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
+        BookAuthor::deleteAll(['book_id' => $this->id]);
+
         foreach ($this->authorsFromForm as $authorId) {
             $bookAuthor = new BookAuthor();
             $bookAuthor->book_id = $this->id;
@@ -70,10 +74,21 @@ class Book extends \yii\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
     }
 
+    public function upload()
+    {
+        $this->photo = UploadedFile::getInstance($this, 'photo');
+        if ($this->photo) {
+            $fileName = $this->id . '.' . $this->photo->extension;
+            $this->photo->saveAs('uploads/' . $fileName);
+            $this->photo = $fileName;
+            $this->save();
+        }
+    }
+
     public function getAuthors()
     {
-        return $this->hasMany(Author::class, ['id' => 'book_id'])
-            ->viaTable('book_author', ['author_id' => 'id']);
+        return $this->hasMany(Author::class, ['id' => 'author_id'])
+            ->viaTable('book_author', ['book_id' => 'id']);
     }
 
     public static function getButtons()

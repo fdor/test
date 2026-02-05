@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use app\models\Book;
 use app\models\User;
 use Yii;
 use yii\console\Controller;
@@ -22,5 +23,11 @@ class UserController extends Controller
         $user->save();
 
         echo 'User created' . PHP_EOL;
+    }
+
+    public function actionTest($id)
+    {
+        $book = Book::findOne($id);
+        print_r($book->getAuthors()->asArray()->all());
     }
 }

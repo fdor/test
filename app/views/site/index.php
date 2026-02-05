@@ -11,8 +11,6 @@ $this->title = 'My Yii Application';
         <h1 class="display-4">Читайте наши книги!</h1>
 
         <p class="lead">В нашем каталоге уже более 709 книг от 200 авторов.</p>
-
-        <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Войти</a></p>
     </div>
 
     <div class="body-content">

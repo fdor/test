@@ -11,9 +11,6 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-/**
- * AuthorController implements the CRUD actions for Author model.
- */
 class AuthorController extends Controller
 {
     /**
@@ -78,7 +75,8 @@ class AuthorController extends Controller
     }
 
     /**
-     * Displays a single Author model.
+     * Просмотр автора
+     *
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -101,7 +99,22 @@ class AuthorController extends Controller
     }
 
     /**
-     * Creates a new Author model.
+     * Удалить автора
+     *
+     * @param int $id ID
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Создать автора
+     *
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
@@ -123,8 +136,8 @@ class AuthorController extends Controller
     }
 
     /**
-     * Updates an existing Author model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * Редактировать автора
+     *
      * @param int $id ID
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
@@ -143,22 +156,8 @@ class AuthorController extends Controller
     }
 
     /**
-     * Deletes an existing Author model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
-    /**
-     * Finds the Author model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
+     * Найти модель
+     *
      * @param int $id ID
      * @return Author the loaded model
      * @throws NotFoundHttpException if the model cannot be found

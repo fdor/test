@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\jobs\SmsJob;
 use app\models\Book;
+use app\models\BookAuthor;
 use app\models\Subscription;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -12,6 +13,7 @@ use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * BookController implements the CRUD actions for Book model.
@@ -80,7 +82,8 @@ class BookController extends Controller
     }
 
     /**
-     * Displays a single Book model.
+     * Просмотр книги
+     *
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -93,8 +96,8 @@ class BookController extends Controller
     }
 
     /**
-     * Creates a new Book model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * Создать книгу
+     *
      * @return string|\yii\web\Response
      */
     public function actionCreate()
@@ -103,6 +106,7 @@ class BookController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                $model->upload();
 
                 Yii::$app->queue_sms->push(new SmsJob([
                     'bookId' => $model->id,
@@ -120,8 +124,8 @@ class BookController extends Controller
     }
 
     /**
-     * Updates an existing Book model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * Редактировать книгу
+     *
      * @param int $id ID
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
@@ -129,8 +133,10 @@ class BookController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->authorsFromForm = $model->authors;
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            $model->upload();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -140,22 +146,23 @@ class BookController extends Controller
     }
 
     /**
-     * Deletes an existing Book model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * Удалить книгу
+     *
      * @param int $id ID
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
     {
+        BookAuthor::deleteAll(['book_id' => $id]);
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Book model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
+     * Найти модель
+     *
      * @param int $id ID
      * @return Book the loaded model
      * @throws NotFoundHttpException if the model cannot be found

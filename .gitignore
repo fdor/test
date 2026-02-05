@@ -6,6 +6,7 @@
 /app/.env
 /app/runtime
 /app/vendor
+/app/web/uploads
 /app/tests/_output/*
 /app/tests/_support/_generated
 /docker/.DS_Store

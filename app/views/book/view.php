@@ -39,8 +39,24 @@ $this->params['breadcrumbs'][] = $this->title;
             'description',
             'year',
             'isbn',
-            'photo',
-            'authors.first_name'
+            [
+                'attribute' => 'photo',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    return '<img src="/uploads/' . $model->photo . '" width=100 />';
+                },
+            ],
+            [
+                'attribute' => 'authors',
+                'value' => function ($model) {
+                    $authors = $model->authors;
+                    $authorsArray = [];
+                    foreach ($authors as $author) {
+                        $authorsArray[] = $author->getFullName();
+                    }
+                    return implode(', ', $authorsArray);
+                },
+            ],
         ],
     ]) ?>
 

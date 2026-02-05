@@ -14,7 +14,7 @@ class m260204_101956_create_tables extends Migration
             'title' => $this->string()->notNull()->unique(),
             'description' => $this->string()->notNull(),
             'year' => $this->string(4)->notNull(),
-            'isbn' => $this->string(13)->notNull(),
+            'isbn' => $this->string(13)->notNull()->unique(),
             'photo' => $this->string()->notNull(),
         ]);
 
