@@ -86,8 +86,7 @@ class AuthorController extends Controller
         $subscription = new Subscription();
         $subscription->author_id = $id;
 
-        if ($subscription->load($this->request->post()) && $subscription->validate()) {
-            $subscription->save();
+        if ($subscription->load($this->request->post()) && $subscription->save()) {
             Yii::$app->session->setFlash('success', 'Подписка оформлена');
         }
 
