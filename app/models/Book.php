@@ -87,6 +87,8 @@ class Book extends \yii\db\ActiveRecord
             $bookAuthor->save();
         }
 
+        $this->uploadPhoto();
+
         parent::afterSave($insert, $changedAttributes);
     }
 
@@ -95,14 +97,13 @@ class Book extends \yii\db\ActiveRecord
      *
      * @throws \yii\db\Exception
      */
-    public function upload()
+    public function uploadPhoto()
     {
-        $this->photo = UploadedFile::getInstance($this, 'photo');
-        if ($this->photo) {
-            $fileName = $this->id . '.' . $this->photo->extension;
-            $this->photo->saveAs('uploads/' . $fileName);
-            $this->photo = $fileName;
-            $this->save();
+        $photo = UploadedFile::getInstance($this, 'photo');
+        if ($photo) {
+            $fileName = $this->id . '.' . $photo->extension;
+            $photo->saveAs('uploads/' . $fileName);
+            Book::updateAll(['photo' => $fileName], ['id' => $this->id]);
         }
     }
 

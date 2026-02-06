@@ -4,16 +4,12 @@ namespace app\controllers;
 
 use app\jobs\SmsJob;
 use app\models\Book;
-use app\models\BookAuthor;
-use app\models\Subscription;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
-use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 
 /**
  * BookController implements the CRUD actions for Book model.
@@ -106,7 +102,6 @@ class BookController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                $model->upload();
 
                 Yii::$app->queue_sms->push(new SmsJob([
                     'bookId' => $model->id,
@@ -136,7 +131,6 @@ class BookController extends Controller
         $model->authorsFromForm = $model->authors;
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            $model->upload();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
