@@ -60,6 +60,17 @@ class Book extends \yii\db\ActiveRecord
         ];
     }
 
+    public function beforeDelete()
+    {
+        BookAuthor::deleteAll(['book_id' => $this->id]);
+
+        if ($this->photo) {
+            unlink('uploads/' . $this->photo);
+        }
+
+        return parent::beforeDelete();
+    }
+
     /**
      * @param bool $insert
      * @param array $changedAttributes
