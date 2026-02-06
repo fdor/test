@@ -92,6 +92,12 @@ class Book extends \yii\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
     }
 
+    public function afterFind()
+    {
+        $this->authorsFromForm = $this->authors;
+        parent::afterFind();
+    }
+
     /**
      * Загрузка фото
      *
