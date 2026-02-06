@@ -88,7 +88,6 @@ class AuthorController extends Controller
 
         if ($subscription->load($this->request->post()) && $subscription->validate()) {
             $subscription->save();
-            $subscription->phone = '';
             Yii::$app->session->setFlash('success', 'Подписка оформлена');
         }
 

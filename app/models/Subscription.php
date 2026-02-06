@@ -48,6 +48,16 @@ class Subscription extends \yii\db\ActiveRecord
     }
 
     /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->phone = '';
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
      * Валидация телефона
      *
      * @param $attribute
