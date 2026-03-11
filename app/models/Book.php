@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\web\UploadedFile;
+use app\services\PhotoUploadService;
 
 /**
  * This is the model class for table "book".
@@ -64,9 +65,8 @@ class Book extends \yii\db\ActiveRecord
     {
         BookAuthor::deleteAll(['book_id' => $this->id]);
 
-        if ($this->photo) {
-            unlink('uploads/' . $this->photo);
-        }
+        $photoService = Yii::createObject(PhotoUploadService::class);
+        $photoService->deleteBookPhoto($this->photo);
 
         return parent::beforeDelete();
     }
@@ -90,7 +90,12 @@ class Book extends \yii\db\ActiveRecord
                 $bookAuthor->save();
             }
 
-            $this->uploadPhoto();
+            $photoService = Yii::createObject(PhotoUploadService::class);
+            $photoFileName = $photoService->uploadBookPhoto($this->id, UploadedFile::getInstance($this, 'photo'));
+            
+            if ($photoFileName) {
+                Book::updateAll(['photo' => $photoFileName], ['id' => $this->id]);
+            }
             
             $transaction->commit();
         } catch (\Exception $e) {
@@ -108,20 +113,6 @@ class Book extends \yii\db\ActiveRecord
         parent::afterFind();
     }
 
-    /**
-     * Загрузка фото
-     *
-     * @throws \yii\db\Exception
-     */
-    public function uploadPhoto()
-    {
-        $photo = UploadedFile::getInstance($this, 'photo');
-        if ($photo) {
-            $fileName = $this->id . '.' . $photo->extension;
-            $photo->saveAs('uploads/' . $fileName);
-            Book::updateAll(['photo' => $fileName], ['id' => $this->id]);
-        }
-    }
 
     /**
      * Авторы
