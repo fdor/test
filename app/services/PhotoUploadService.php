@@ -83,10 +83,36 @@ class PhotoUploadService
             throw new Exception('Недопустимое расширение файла. Разрешены: ' . implode(', ', $this->allowedExtensions));
         }
 
-        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        $allowedMimeTypes = $this->getAllowedMimeTypes();
         if (!in_array($photo->type, $allowedMimeTypes, true)) {
             throw new Exception('Недопустимый тип файла. Разрешены только изображения.');
         }
+    }
+
+    /**
+     * Получение допустимых MIME типов на основе расширений
+     *
+     * @return array
+     */
+    private function getAllowedMimeTypes(): array
+    {
+        $mimeTypesMap = [
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp',
+        ];
+
+        $allowedMimeTypes = [];
+        foreach ($this->allowedExtensions as $extension) {
+            $extension = strtolower($extension);
+            if (isset($mimeTypesMap[$extension])) {
+                $allowedMimeTypes[] = $mimeTypesMap[$extension];
+            }
+        }
+
+        return array_unique($allowedMimeTypes);
     }
 
     /**
