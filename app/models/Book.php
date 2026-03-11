@@ -78,16 +78,26 @@ class Book extends \yii\db\ActiveRecord
      */
     public function afterSave($insert, $changedAttributes)
     {
-        BookAuthor::deleteAll(['book_id' => $this->id]);
+        $transaction = Yii::$app->db->beginTransaction();
+        
+        try {
+            BookAuthor::deleteAll(['book_id' => $this->id]);
 
-        foreach ($this->authorsFromForm as $authorId) {
-            $bookAuthor = new BookAuthor();
-            $bookAuthor->book_id = $this->id;
-            $bookAuthor->author_id = $authorId;
-            $bookAuthor->save();
+            foreach ($this->authorsFromForm as $authorId) {
+                $bookAuthor = new BookAuthor();
+                $bookAuthor->book_id = $this->id;
+                $bookAuthor->author_id = $authorId;
+                $bookAuthor->save();
+            }
+
+            $this->uploadPhoto();
+            
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            Yii::error('Error saving book: ' . $e->getMessage());
+            throw $e;
         }
-
-        $this->uploadPhoto();
 
         parent::afterSave($insert, $changedAttributes);
     }
