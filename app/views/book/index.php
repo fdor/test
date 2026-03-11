@@ -39,10 +39,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             'title',
+            [
+                'attribute' => 'photo',
+                'format' => 'html',
+                'value' => function ($model) {
+                    return $model->photo 
+                        ? Html::img('/uploads/' . $model->photo, ['width' => '50px', 'height' => '70px', 'style' => 'object-fit: cover;'])
+                        : 'Нет фото';
+                },
+                'contentOptions' => ['style' => 'text-align: center; width: 80px;'],
+            ],
             'description',
             'year',
             'isbn',
-            //'photo',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Book $model, $key, $index, $column) {
