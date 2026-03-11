@@ -23,6 +23,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'photo')->fileInput() ?>
 
+    <?php if ($model->photo): ?>
+        <div class="mb-3">
+            <label class="form-label">Текущее изображение:</label><br>
+            <img src="/uploads/<?= $model->photo ?>" alt="<?= $model->title ?>" style="max-width: 200px; max-height: 300px; object-fit: cover; border: 1px solid #ddd; padding: 5px;">
+            <br>
+            <small class="text-muted">Чтобы заменить изображение, выберите новый файл выше</small>
+        </div>
+    <?php endif; ?>
+
     <?= $form->field($model, 'authorsFromForm')->checkboxList(Author::getAuthorArray()); ?>
 
     <div class="form-group">

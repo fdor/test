@@ -63,6 +63,16 @@ class Book extends \yii\db\ActiveRecord
         ];
     }
 
+    public function beforeSave($insert)
+    {
+        // Если это редактирование и фото не загружено, сохраняем текущее значение
+        if (!$insert && !$this->photo) {
+            $this->photo = $this->getOldAttribute('photo');
+        }
+        
+        return parent::beforeSave($insert);
+    }
+
     public function beforeDelete()
     {
         BookAuthor::deleteAll(['book_id' => $this->id]);
@@ -93,11 +103,20 @@ class Book extends \yii\db\ActiveRecord
             }
 
             $photoService = Yii::createObject(PhotoUploadService::class);
-            $photoFileName = $photoService->uploadBookPhoto($this->id, UploadedFile::getInstance($this, 'photo'));
+            $uploadedFile = UploadedFile::getInstance($this, 'photo');
             
-            if ($photoFileName) {
-                Book::updateAll(['photo' => $photoFileName], ['id' => $this->id]);
+            if ($uploadedFile) {
+                // Загружаем новое фото только если файл был выбран
+                $photoFileName = $photoService->uploadBookPhoto($this->id, $uploadedFile);
+                if ($photoFileName) {
+                    // Удаляем старое фото если загружено новое
+                    if ($this->photo) {
+                        $photoService->deleteBookPhoto($this->photo);
+                    }
+                    Book::updateAll(['photo' => $photoFileName], ['id' => $this->id]);
+                }
             }
+            // Если файл не выбран, ничего не делаем - текущее фото остается в БД
             
             $transaction->commit();
         } catch (\Exception $e) {
