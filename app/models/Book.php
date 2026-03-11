@@ -35,13 +35,15 @@ class Book extends \yii\db\ActiveRecord
      */
     public function rules()
     {
+        $allowedExtensions = implode(',', Yii::$app->params['allowedPhotoExtensions'] ?? ['jpg', 'jpeg', 'png']);
+        
         return [
             [['title', 'description', 'year', 'isbn', 'authorsFromForm'], 'required'],
             [['title', 'description'], 'string', 'max' => 255],
             [['year'], 'string', 'max' => 4],
             [['isbn'], 'string', 'max' => 13],
             [['title', 'isbn'], 'unique'],
-            [['photo'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
+            [['photo'], 'file', 'skipOnEmpty' => true, 'extensions' => $allowedExtensions],
         ];
     }
 
